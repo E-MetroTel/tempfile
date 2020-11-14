@@ -20,14 +20,16 @@ defmodule Tempfile.Mixfile do
   end
 
   def application do
-    [applications: [:logger], mod: {Tempfile, []}]
+    [
+      mod: {Tempfile.Application, []},
+      extra_applications: [:logger]
+    ]
   end
 
   defp deps do
     [
-      {:ex_doc, "~> 0.11", only: :dev},
-      {:earmark, "~> 0.2", only: :dev},
-      {:credo, "~> 0.3", only: :dev}
+      {:ex_doc, "~> 0.0", only: :dev},
+      {:earmark, "~> 1.0", only: :dev}
     ]
   end
 

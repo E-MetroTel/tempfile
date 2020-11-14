@@ -10,8 +10,8 @@ defmodule Tempfile.File do
   @max_attempts 10
   @tmp_env_vars ~w(TMPDIR TMP TEMP)
 
-  def start_link do
-    GenServer.start_link(__MODULE__, :ok, [name: __MODULE__])
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   @doc """
@@ -24,8 +24,9 @@ defmodule Tempfile.File do
       iex> Tempfile.random("temporary.txt")
       {:ok, "./tmp/temporary-12345-456789-3.txt"}
   """
-  @spec random(String.t) :: {:ok, String.t} |
-                            {:too_many_attempts, String.t, pos_integer}
+  @spec random(String.t()) ::
+          {:ok, String.t()}
+          | {:too_many_attempts, String.t(), pos_integer}
   def random(filename) do
     GenServer.call(tempfile_server(), {:random, filename})
   end
@@ -52,6 +53,7 @@ defmodule Tempfile.File do
     case Map.get(map, pid) do
       nil ->
         {:noreply, state}
+
       paths ->
         Enum.each(paths, &File.rm/1)
         {:noreply, {tmp, Map.delete(map, pid)}}
@@ -73,6 +75,7 @@ defmodule Tempfile.File do
       nil ->
         Process.monitor(pid)
         {:ok, [], Map.put(map, pid, [])}
+
       paths ->
         {:ok, paths, map}
     end
@@ -83,20 +86,22 @@ defmodule Tempfile.File do
 
     case File.write(path, "", [:write, :raw, :exclusive, :binary]) do
       :ok ->
-        {:ok, path, Map.update(map, pid, nil, &([path|&1]))}
+        {:ok, path, Map.update(map, pid, nil, &[path | &1])}
+
       {:error, reason} when reason in [:eexist, :eaccess] ->
         open_random_file(filename, tmp, attempts + 1, pid, map, paths)
     end
   end
+
   defp open_random_file(_filename, tmp, attempts, _pid, _map, _paths) do
     {:too_many_attempts, tmp, attempts}
   end
 
   defp unique_path(tmp, filename) do
-    {_mega, sec, micro} = :os.timestamp
+    {_mega, sec, micro} = :os.timestamp()
     scheduler = :erlang.system_info(:scheduler_id)
-    extname   = Path.extname(filename)
-    basename  = Path.basename(filename, extname)
+    extname = Path.extname(filename)
+    basename = Path.basename(filename, extname)
 
     "#{tmp}/#{basename}-#{sec}-#{micro}-#{scheduler}#{extname}"
   end
