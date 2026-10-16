@@ -28,11 +28,7 @@ The package can be installed from hex as `tempfile`:
         [{:tempfile, "~> 0.1.0"}]
       end
 
-2. Ensure tempfile is started before your application:
-
-      def application do
-        [applications: [:tempfile]]
-      end
+Mix starts the runtime dependency before your application.
 
 ## Usage
 
@@ -44,6 +40,32 @@ File.write!(path, "I am a text file")
 ```
 
 When the calling process exits the file will be removed automatically.
+
+## Elixir 1.20 development
+
+The `.tool-versions` file selects Elixir `1.20.4-otp-29` and Erlang `29.1.2`.
+Install these with asdf, then run:
+
+```sh
+mix deps.get
+mix compile --force --warnings-as-errors
+mix test --warnings-as-errors
+mix test --cover
+MIX_ENV=test mix compile --force --warnings-as-errors
+MIX_ENV=prod mix compile --force --warnings-as-errors
+mix docs --warnings-as-errors
+mix format --check-formatted
+```
+
+Tests use the local filesystem and require a writable temporary directory.
+The server selects `TMPDIR`, `TMP`, or `TEMP`, falling back to `/tmp`, and stores
+its files in a `tempfile` subdirectory. Each file belongs to the process that
+called `Tempfile.random/1`; keep that process alive until the file is no longer
+needed. Tests cover unique filenames, multiple files per owner, cleanup after
+owner exit, and isolation between owners.
+
+ExDoc is a development-only dependency. The generated documentation includes this
+README and the license.
 
 ## License
 
