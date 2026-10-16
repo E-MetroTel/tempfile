@@ -1,21 +1,20 @@
 defmodule Tempfile.Mixfile do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
 
   def project do
     [
       app: :tempfile,
       version: @version,
-      elixir: "~> 1.2",
-      build_embedded: Mix.env() == :prod,
+      elixir: "~> 1.20",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
       deps: deps(),
       name: "Tempfile",
       source_url: "https://github.com/sorentwo/tempfile",
-      docs: [source_ref: "v#{@version}", extras: ["README.md"], main: "Tempfile"]
+      docs: [source_ref: "v#{@version}", extras: ["README.md", "LICENSE.txt"], main: "Tempfile"]
     ]
   end
 
@@ -28,8 +27,7 @@ defmodule Tempfile.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.0", only: :dev},
-      {:earmark, "~> 1.0", only: :dev}
+      {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]
   end
 
@@ -44,7 +42,7 @@ defmodule Tempfile.Mixfile do
       maintainers: ["Parker Selbert"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/sorentwo/tempfile"},
-      files: ~w(lib priv mix.exs README.md CHANGELOG.md)
+      files: ~w(lib priv mix.exs README.md CHANGELOG.md LICENSE.txt)
     ]
   end
 end
