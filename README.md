@@ -24,9 +24,11 @@ The package can be installed from hex as `tempfile`:
 
 1. Add tempfile to your list of dependencies in `mix.exs`:
 
-      def deps do
-        [{:tempfile, "~> 0.1.0"}]
-      end
+```elixir
+  def deps do
+    [{:tempfile, "~> 0.2.0"}]
+  end
+```
 
 Mix starts the runtime dependency before your application.
 
