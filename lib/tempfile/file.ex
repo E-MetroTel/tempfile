@@ -21,8 +21,9 @@ defmodule Tempfile.File do
 
   ## Example
 
-      iex> Tempfile.random("temporary.txt")
-      {:ok, "./tmp/temporary-12345-456789-3.txt"}
+      iex> {:ok, path} = Tempfile.random("temporary.txt")
+      iex> File.exists?(path) and Path.extname(path) == ".txt"
+      true
   """
   @spec random(String.t()) ::
           {:ok, String.t()}
